@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wang.dao.mapper.StudentMapper">
+
+    <sql id="studentBaseColumnSql">
+        StudentNo,
+        StudentName,
+        GradeId
+    </sql>
+
+    <sql id="studentBaseWhereSql">
+        <if test="map!=null">
+            <where>
+                <if test="map.studentNo!=null">
+                    StudentNo = #{map.studentNo}
+                </if>
+                <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(map.studentName)">
+                    AND StudentName = #{map.studentName}
+                </if>
+                <if test="map.gradeId!=null">
+                    AND GradeId = #{map.gradeId}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <insert id="insertStudent" parameterType="com.wang.dao.vo.StudentVo">
+        INSERT INTO student(
+        <include refid="studentBaseColumnSql"/>
+        )VALUES(
+            #{studentNo},
+            #{studentName},
+            #{gradeId}
+        )
+    </insert>
+
+    
+    <delete id="deleteStudentByStudentNo" parameterType="Integer">
+        DELETE FROM student WHERE StudentNo = #{studentNo}
+    </delete>
+    <update id="updateStudent" parameterType="com.wang.dao.entity.Student">
+        UPDATE student
+        <set>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(studentName)">
+                StudentName = #{studentName} ,
+            </if>
+            <if test="gradeId!=null">
+                GradeId = #{gradeId} ,
+            </if>
+        </set>
+        WHERE StudentNo = #{studentNo}
+    </update>
+
+    <select id="searchStudentByParams1" parameterType="map" resultMap="studentMap1">
+        SELECT
+        StudentNo,StudentName,student.GradeId,GradeName
+        FROM student join grade on student.GradeId=grade.GradeId
+        <include refid="studentBaseWhereSql"/>
+    </select>
+
+    <resultMap type="com.wang.dao.vo.StudentVo" id="studentMap1">
+        <id column="StudentNo" property="studentNo"/>
+        <result column="StudentName" property="studentName"/>
+        <result column="GradeId" property="gradeId"/>
+        <result column="GradeName" property="gradeName"/>
+    </resultMap>
+
+
+    <select id="searchStudentByParams" parameterType="map" resultMap="studentMap">
+    SELECT
+    <include refid="studentBaseColumnSql"/>
+    FROM student
+    <include refid="studentBaseWhereSql"/>
+</select>
+
+    <resultMap type="com.wang.dao.entity.Student" id="studentMap">
+        <id column="StudentNo" property="studentNo"/>
+        <result column="StudentName" property="studentName"/>
+        <result column="GradeId" property="gradeId"/>
+    </resultMap>
+
+</mapper>

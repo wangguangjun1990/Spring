@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<form  action="chaxun1" id="d" method="post">
+    姓名：<input type="text"  name="studentName" value="王光俊"/><br>
+    学号：<input type="text" name="studentNo" value="1"/><br>
+    <input type="button" id="ss"  value="提交"></form>
+
+
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script >
+    $(function(){
+    $("#ss").click(function(){
+        $.post("chaxun1",$("#d").serialize(),function(data){
+            if(data==1){
+               location="fen1";
+            }else{
+                location.reload();
+            }
+        })
+    })
+})</script>
+
+
+</body>
+</html>
